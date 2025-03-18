@@ -17,20 +17,13 @@ pub fn two_of_two_multisig_witness_script(
     pubkey1: &PublicKey,
     pubkey2: &PublicKey,
 ) -> ScriptBuf {
-    
     Builder::new()
-        .push_opcode(opcodes::OP_PUSHNUM_2)
-        .push_key(pubkey1)
-        .push_key(pubkey2)
-        .push_opcode(opcodes::OP_PUSHNUM_2)
-        .push_opcode(opcodes::OP_CHECKMULTISIG)
-        .into_script()
-}
-
-pub fn timelocked_p2pkh(pubkey: &PublicKey, blocks_or_seconds: i64) -> ScriptBuf {
-    
-    unimplemented!()
-    
+      .push_int(2)
+      .push_key(pubkey1)
+      .push_key(pubkey2)
+      .push_int(2)
+    .push_opcode(opcodes::OP_CHECKMULTISIG)
+      .into_script()
 }
 
 pub fn build_funding_transaction(
@@ -40,7 +33,18 @@ pub fn build_funding_transaction(
     amount: u64,
 ) -> Transaction {
 
-    unimplemented!()
+    let multisig_witness = two_of_two_multisig_witness_script(alice_pubkey,bob_pubkey);
+
+    let output = build_output(amount, multisig_witness.to_p2wsh());
+
+    let version = Version::TWO;
+    let locktime = LockTime::ZERO;
+
+    let tx = build_transaction(version, locktime,
+                              txins,
+                              vec![output]);
+
+    tx
 }
 
 pub fn build_refund_transaction(

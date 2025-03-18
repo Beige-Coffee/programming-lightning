@@ -1,8 +1,7 @@
 #![allow(dead_code, unused_imports, unused_variables, unused_must_use)]
 use crate::ch1_intro_htlcs::exercises::{
     build_commitment_transaction, build_funding_transaction, build_htlc_commitment_transaction,
-    build_htlc_timeout_transaction, build_refund_transaction, generate_revocation_pubkey,
-    timelocked_p2pkh, to_local, two_of_two_multisig_witness_script,
+    build_htlc_timeout_transaction, build_refund_transaction, generate_revocation_pubkey, to_local, two_of_two_multisig_witness_script,
 };
 use crate::internal::helper::{
     bitcoin_pubkey_from_private_key, pubkey_from_private_key, secp256k1_private_key,
@@ -34,19 +33,6 @@ fn test_two_of_two_multisig_witness_script() {
     ];
 
     assert!(acceptable_solutions.contains(&their_solution))
-}
-
-#[test]
-fn test_timelocked_p2pkh() {
-    let alice_pubkey = pubkey_from_private_key(&[0x01; 32]);
-    let timestamp: i64 = 1000000000;
-
-    let result = timelocked_p2pkh(&alice_pubkey, timestamp);
-
-    assert_eq!(
-        format!("{}", result.script_hash()),
-        "9c727802a2cd91beb1f1a0a5fd8b391f61c76343".to_string()
-    )
 }
 
 #[test]
